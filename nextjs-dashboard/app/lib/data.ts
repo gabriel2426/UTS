@@ -9,7 +9,16 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+const connectionString =
+  process.env.POSTGRES_URL ?? process.env.DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error(
+    'Missing database connection string. Set POSTGRES_URL or DATABASE_URL.',
+  );
+}
+
+const sql = postgres(connectionString, { ssl: 'require' });
 
 export async function fetchRevenue() {
   try {
